@@ -39,6 +39,10 @@ This tool uses the open-source **Pollinations.ai API** to process text.
 ## 📦 For Developers / Self-Hosting
 You can clone this repo and run it locally. It is a single HTML file.
 
-```bash
+
 git clone [https://github.com/rlwadh/authority-translator.git](https://github.com/rlwadh/authority-translator.git)
+
 # Just open index.html in your browser
+
+---
+**Powered by [ADHOCON GmbH](https://adhocon.com)** - *Architects of Autonomous Regulatory AI Systems.*
