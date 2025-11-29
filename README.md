@@ -39,4 +39,4 @@ If you work in a high-security air-gapped environment:
 4. It works perfectly.
 
 ---
-**Powered by [ADHOCON](https://adhocon.com)** - *Architects of Autonomous Regulatory Systems.*
+**Powered by [ADHOCON GmbH](https://adhocon.com)** - *Architects of Autonomous Regulatory AI Systems.*
