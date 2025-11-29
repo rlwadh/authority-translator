@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Authority Translator</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #003459; text-align: center; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        label { font-weight: bold; display: block; margin-top: 15px; color: #003459; }
+        textarea, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        button { background-color: #006caa; color: white; border: none; padding: 12px 20px; margin-top: 20px; width: 100%; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #005085; }
+        #output-container { margin-top: 30px; display: none; background: #f0f4f8; padding: 15px; border-left: 5px solid #006caa; border-radius: 4px; }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-family: monospace; background: #fff; padding: 10px; border: 1px solid #ddd; }
+        .copy-hint { font-size: 12px; color: #666; text-align: right; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>⚖️ The Authority Translator</h1>
+    <p class="subtitle">Turn regulatory rage into compliance. Runs locally in your browser.</p>
+
+    <div class="container">
+        <label for="rawInput">1. The Raw Draft (Your Honest Thoughts)</label>
+        <textarea id="rawInput" rows="6" placeholder="Example: Why are you asking for clinical data again? We already sent the CEP last month! This is ridiculous!"></textarea>
+
+        <label for="target">2. Recipient</label>
+        <select id="target">
+            <option value="US FDA (Reviewer)">US FDA (Reviewer)</option>
+            <option value="EU Notified Body (Auditor)">EU Notified Body (Auditor)</option>
+            <option value="German Authority (BfArM/ZLG)">German Authority (BfArM/ZLG)</option>
+            <option value="Internal Management (C-Level)">Internal Management (C-Level)</option>
+        </select>
+
+        <label for="tone">3. Strategy</label>
+        <select id="tone">
+            <option value="Defensive">Defensive (We are right, you are wrong - but polite)</option>
+            <option value="Apologetic">Apologetic (We messed up - here is the CAPA)</option>
+            <option value="Clarification">Clarification (You missed information we already sent)</option>
+            <option value="Delaying">Delaying (We need more time)</option>
+        </select>
+
+        <button onclick="generatePrompt()">Generate Transformation Prompt</button>
+
+        <div id="output-container">
+            <h3>✅ System Prompt Generated</h3>
+            <p>Copy this block into ChatGPT, Copilot, or Claude:</p>
+            <pre id="outputCode"></pre>
+            <div class="copy-hint">Your data never leaves this page.</div>
+        </div>
+    </div>
+
+    <script>
+        function generatePrompt() {
+            const raw = document.getElementById('rawInput').value;
+            const target = document.getElementById('target').value;
+            const tone = document.getElementById('tone').value;
+
+            if (!raw) { alert("Please enter your draft text."); return; }
+
+            const contextMap = {
+                "US FDA (Reviewer)": "concise, data-driven, unemotional. Cite 21 CFR 820. Use 'least burdensome approach'.",
+                "EU Notified Body (Auditor)": "cooperative, evidence-based. Reference ISO 13485:2016 and MDR Annexes. Emphasize 'State of the Art'.",
+                "German Authority (BfArM/ZLG)": "highly formal, bureaucratic German ('Behördendeutsch'). Passive voice. Reference paragraphs (§). Zero emotion.",
+                "Internal Management (C-Level)": "executive summary style. Focus on risk, timeline, and cost. No jargon."
+            };
+
+            const toneMap = {
+                "Defensive": "Stand firm but use 'interpretative consensus' language. Do not admit fault.",
+                "Apologetic": "Acknowledge finding. Move to Correction and Corrective Action immediately.",
+                "Clarification": "Politely guide reviewer to the page they missed. Assume workload error, not incompetence.",
+                "Delaying": "Justify delay with 'thorough root cause investigation' or 'external dependencies'."
+            };
+
+            const prompt = `# SYSTEM ROLE
+Act as a Senior Regulatory Affairs Expert specializing in ${target}.
+
+# TASK
+Rewrite the following DRAFT into a formal, authority-ready response.
+
+# INPUT DRAFT
+"${raw}"
+
+# STYLE GUIDE
+Recipient: ${target}
+Style: ${contextMap[target]}
+
+# STRATEGY
+Intent: ${tone}
+Execution: ${toneMap[tone]}
+
+# RULES
+1. Remove aggression, sarcasm, or uncertainty.
+2. Use standard regulatory terminology.
+3. If data is missing, use [INSERT REFERENCE].
+4. Output ONLY the rewritten text.`;
+
+            document.getElementById('outputCode').textContent = prompt;
+            document.getElementById('output-container').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
