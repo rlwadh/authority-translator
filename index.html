@@ -3,207 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta property="og:title" content="The Authority Translator | by ADHOCON">
-    <meta property="og:description" content="Turn regulatory rage into compliance. A tool by Rudolf Wagner to automate diplomatic communication with FDA, BfArM, and Notified Bodies.">
-    <meta property="og:type" content="website">
-    
-    <title>The Authority Translator | ADHOCON GmbH Open Source</title>
-    
+    <meta property="og:description" content="Turn regulatory rage into compliance. Free AI Tool by Rudolf Wagner.">
+    <title>The Authority Translator | ADHOCON Open Source</title>
     <style>
-        /* CORPORATE IDENTITY */
-        :root {
-            --adhocon-navy: #003459;
-            --adhocon-blue: #006caa;
-            --adhocon-grey: #b8b8b8;
-            --bg-color: #f4f7f6;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            color: #333; 
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* HEADER BRANDING */
-        .header-bar {
-            background-color: var(--adhocon-navy);
-            color: white;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-        .header-bar a { color: #fff; text-decoration: none; font-weight: bold; }
-        
-        .main-content {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
-            flex: 1;
-        }
-
+        :root { --adhocon-navy: #003459; --adhocon-blue: #006caa; --bg-color: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: #333; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .header-bar { background-color: var(--adhocon-navy); color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 14px; }
+        .header-bar a { color: #fff; text-decoration: none; }
+        .main-content { max-width: 800px; margin: 40px auto; padding: 0 20px; flex: 1; }
+        .container { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 5px solid var(--adhocon-blue); position: relative; }
+        .badge-free { position: absolute; top: -15px; right: 20px; background: #28a745; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         h1 { color: var(--adhocon-navy); text-align: center; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-style: italic; }
-
-        .container { 
-            background: white; 
-            padding: 40px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-            border-top: 5px solid var(--adhocon-blue);
-        }
-
         label { font-weight: bold; display: block; margin-top: 20px; color: var(--adhocon-navy); }
         textarea, select { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; font-family: inherit; }
-        textarea:focus, select:focus { border-color: var(--adhocon-blue); outline: none; }
-
-        button { 
-            background-color: var(--adhocon-blue); 
-            color: white; 
-            border: none; 
-            padding: 15px 20px; 
-            margin-top: 30px; 
-            width: 100%; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: bold; 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
-        }
+        button { background-color: var(--adhocon-blue); color: white; border: none; padding: 15px; margin-top: 30px; width: 100%; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
         button:hover { background-color: var(--adhocon-navy); }
-
-        #output-container { margin-top: 30px; display: none; background: #f0f4f8; padding: 20px; border-left: 5px solid var(--adhocon-blue); border-radius: 4px; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-family: 'Courier New', monospace; background: #fff; padding: 15px; border: 1px solid #ddd; color: #333; }
-        
-        .copy-hint { font-size: 12px; color: #666; text-align: right; margin-top: 5px; display: flex; justify-content: space-between; }
-
-        /* FOOTER BRANDING */
-        footer {
-            background-color: var(--adhocon-navy);
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 50px;
-            font-size: 14px;
-        }
-        footer a { color: var(--adhocon-blue); text-decoration: none; font-weight: bold; }
-        footer a:hover { color: white; text-decoration: underline; }
-        .footer-badges { margin-top: 15px; opacity: 0.8; font-size: 12px; }
+        button:disabled { background-color: #ccc; cursor: wait; }
+        #result-area { margin-top: 30px; display: none; }
+        .result-box { background: #f0f4f8; padding: 20px; border-left: 5px solid var(--adhocon-blue); border-radius: 4px; white-space: pre-wrap; font-family: 'Georgia', serif; line-height: 1.6; position: relative; }
+        .loading-spinner { display: none; text-align: center; margin-top: 20px; font-style: italic; color: #666; }
+        footer { background-color: var(--adhocon-navy); color: white; text-align: center; padding: 30px; margin-top: 50px; font-size: 14px; }
+        footer a { color: var(--adhocon-blue); font-weight: bold; text-decoration: none; }
+        .disclaimer { font-size: 11px; color: #999; margin-top: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="header-bar">
-        An Open Source Tool by <a href="https://adhocon.com" target="_blank">ADHOCON.COM</a>
-    </div>
+    <div class="header-bar">An Open Source Tool by <a href="https://adhocon.com" target="_blank">ADHOCON.COM</a></div>
 
     <div class="main-content">
         <h1>⚖️ The Authority Translator</h1>
-        <p class="subtitle">Turn regulatory rage into compliance. 100% Local & Private.</p>
+        <p class="subtitle">Turn regulatory rage into compliance. Free AI Translation.</p>
 
         <div class="container">
-            <label for="rawInput">1. The Raw Draft (Your Honest Thoughts)</label>
-            <textarea id="rawInput" rows="6" placeholder="Example: Why are you asking for clinical data again? We already sent the CEP last month! This is ridiculous, read page 5!"></textarea>
+            <div class="badge-free">✨ FREE AI INCLUDED</div>
+            
+            <label>1. The Raw Draft (Be honest & emotional)</label>
+            <textarea id="rawInput" rows="5" placeholder="Example: Why do you need clinical data again?! We sent it last month! This is ridiculous!"></textarea>
 
-            <label for="target">2. Who is the recipient?</label>
-            <select id="target">
-                <option value="US FDA (Reviewer)">US FDA (Reviewer) - "Least Burdensome"</option>
-                <option value="EU Notified Body (Auditor)">EU Notified Body (Auditor) - "Cooperative"</option>
-                <option value="German Authority (BfArM/ZLG)">German Authority (BfArM) - "Formal Bureaucratic"</option>
-                <option value="Internal Management (C-Level)">Internal Management (C-Level) - "Executive Summary"</option>
-            </select>
-
-            <label for="tone">3. What is your Strategy?</label>
-            <select id="tone">
-                <option value="Defensive">Defensive (Stand firm, but polite)</option>
-                <option value="Apologetic">Apologetic (Admit fault, show CAPA)</option>
-                <option value="Clarification">Clarification (They missed info we sent)</option>
-                <option value="Delaying">Delaying (Buying time for investigation)</option>
-            </select>
-
-            <button onclick="generatePrompt()">Generate Transformation Prompt</button>
-
-            <div id="output-container">
-                <h3>✅ System Prompt Generated</h3>
-                <p>Copy this block below and paste it into <strong>ChatGPT Enterprise, Copilot, or Claude</strong>:</p>
-                <pre id="outputCode"></pre>
-                <div class="copy-hint">
-                    <span>🔒 Data never leaves your browser.</span>
-                    <span>Ready for your secure LLM.</span>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex:1;">
+                    <label>2. Recipient</label>
+                    <select id="target">
+                        <option value="US FDA">US FDA (Reviewer)</option>
+                        <option value="EU Notified Body">EU Notified Body (Auditor)</option>
+                        <option value="German Authority (BfArM)">German BfArM (Formal German)</option>
+                        <option value="Management">Internal C-Level</option>
+                    </select>
                 </div>
+                <div style="flex:1;">
+                    <label>3. Strategy</label>
+                    <select id="tone">
+                        <option value="Defensive">Defensive (Stand firm)</option>
+                        <option value="Apologetic">Apologetic (Admit fault)</option>
+                        <option value="Clarification">Clarification (Missed info)</option>
+                        <option value="Delaying">Delaying (Buy time)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="actionBtn" onclick="process()">Translate Now (AI)</button>
+            <div class="loading-spinner" id="spinner">🤖 AI is rewriting your anger...</div>
+
+            <div id="result-area">
+                <h3 id="resultTitle">✅ Diplomatic Response</h3>
+                <div id="output" class="result-box"></div>
+                <div class="disclaimer">Generated via Pollinations.ai (Open Source Model). Always verify before sending.</div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p><strong>ADHOCON GmbH</strong> &bull; Regulatory Intelligence & AI Automation</p>
-        <p>Built by <a href="https://www.linkedin.com/in/rudolfwagner/" target="_blank">Rudolf Wagner</a></p>
-        <div class="footer-badges">
-            ISO 13485 EXPERIENCE &bull; ISO 17024 CERTIFIED EXPERT &bull; ISO 22301 RESILIENCE
-        </div>
-        <p style="margin-top: 20px; font-size: 12px;">
-            <a href="https://github.com/rlwadh/authority-translator" target="_blank">View Code on GitHub</a> &bull; 
-            <a href="https://adhocon.com" target="_blank">Visit ADHOCON.COM</a>
-        </p>
+        <p><strong>ADHOCON GmbH</strong> &bull; ISO 13485 & 17024 Certified Expertise</p>
+        <p><a href="https://github.com/rlwadh/authority-translator" target="_blank">View Code on GitHub</a></p>
     </footer>
 
     <script>
-        function generatePrompt() {
+        async function process() {
             const raw = document.getElementById('rawInput').value;
             const target = document.getElementById('target').value;
             const tone = document.getElementById('tone').value;
-
-            if (!raw) { alert("Please enter your draft text first."); return; }
-
-            const contextMap = {
-                "US FDA (Reviewer)": "concise, data-driven, unemotional. Cite 21 CFR 820 sections. Use terms like 'substantial equivalence' or 'least burdensome approach' if applicable.",
-                "EU Notified Body (Auditor)": "cooperative, evidence-based. Reference ISO 13485:2016 and MDR Annexes. Emphasize 'State of the Art' and continuous improvement.",
-                "German Authority (BfArM/ZLG)": "highly formal, bureaucratic German ('Behördendeutsch'). Use passive voice. Precise legal terminology. Reference specific paragraphs (§). Zero emotion.",
-                "Internal Management (C-Level)": "executive summary style. Focus on: Risk of losing certificate, Timeline impact, and Cost. No technical jargon."
-            };
-
-            const toneMap = {
-                "Defensive": "Stand firm on our position but use 'interpretative consensus' language. Do not admit fault, but offer further explanation to align understanding.",
-                "Apologetic": "Acknowledge the finding immediately. Move straight to the 'Correction' (immediate fix) and 'Corrective Action' (Systemic fix). Show control.",
-                "Clarification": "Politely guide the reviewer to the specific page/document. Assume they simply missed it due to workload, do not imply they are incompetent.",
-                "Delaying": "Express commitment to quality but justify the delay with 'thorough root cause investigation' or 'external validation dependencies'."
-            };
-
-            const prompt = `# SYSTEM ROLE
-Act as a Senior Regulatory Affairs Expert and Crisis Communicator specializing in dealing with: ${target}.
-
-# YOUR TASK
-Rewrite the following DRAFT input into a formal, authority-ready response (Email or Official Letter).
-
-# INPUT DRAFT (RAW)
-"${raw}"
-
-# TARGET AUDIENCE & STYLE
-The recipient is: ${target}
-The style must be: ${contextMap[target]}
-
-# STRATEGIC INTENT
-The strategy is: ${tone}
-Execution instructions: ${toneMap[tone]}
-
-# RULES
-1. Remove all emotion, aggression, sarcasm, or uncertainty.
-2. Use standard regulatory terminology appropriate for the region.
-3. If the draft implies data is missing, suggest a placeholder like [INSERT REFERENCE TO DOC X].
-4. Output ONLY the rewritten text.`;
-
-            document.getElementById('outputCode').textContent = prompt;
-            document.getElementById('output-container').style.display = 'block';
             
-            // Auto scroll to result
-            document.getElementById('output-container').scrollIntoView({behavior: "smooth"});
+            if (!raw) { alert("Please enter some text first."); return; }
+
+            const btn = document.getElementById('actionBtn');
+            const spinner = document.getElementById('spinner');
+            const resultArea = document.getElementById('result-area');
+            
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            // Constructing the Prompt for the external AI
+            const systemInstruction = `Act as a Regulatory Affairs Expert. Rewrite the following text into a formal, diplomatic response for: ${target}. Strategy: ${tone}. Remove all anger and emotion. Use standard regulatory terminology. Only output the rewritten text.`;
+            const prompt = `${systemInstruction}\n\nINPUT TEXT: "${raw}"`;
+
+            // Using Pollinations.ai (Free Open Source AI Endpoint)
+            // We encode the prompt into the URL.
+            const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("AI Service Busy");
+                const text = await response.text();
+                
+                document.getElementById('output').innerText = text;
+                resultArea.style.display = 'block';
+            } catch (e) {
+                alert("AI Service is currently overloaded. Please try again in a few seconds.");
+            }
+
+            btn.disabled = false;
+            spinner.style.display = 'none';
         }
     </script>
 
